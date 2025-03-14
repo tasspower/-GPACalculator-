@@ -1,85 +1,99 @@
-# GPA Calculator - Windows Forms Application
+# GPA Calculator
 
-## 📌 Overview
-This project is a **Windows Forms Application** built with **C#** for calculating and displaying GPA based on user-entered scores. The application allows users to input scores, compute grades, and display both numerical and letter grades.
+นาย ณัฐพัชร ศิริวราพัฒน์  รหัสนักศึุกษา 673450035-6
 
----
-
-## 🎯 Features
-✅ Enter multiple scores
-✅ Calculate the average score (GPA)
-✅ Convert numerical GPA to a letter grade (A, B, C, etc.)
-✅ Display grades dynamically in a TextBox or Label
-✅ Simple and user-friendly UI
+## รายละเอียดโปรเจกต์
+โปรเจกต์นี้เป็น Windows Forms Application ที่ใช้สำหรับคำนวณค่าต่างๆ ของคะแนนนักเรียน เช่น จำนวนคะแนนสูงสุด, ต่ำสุด, ค่าเฉลี่ย GPA ฯลฯ โดยใช้คลาส `GPACalculator`
 
 ---
 
-## 🛠️ Project Structure
+## โครงสร้างโปรแกรม
 ```mermaid
-graph TD;
-    A[Main Form] -->|User Input| B[Score Entry]
-    B --> C[Calculate GPA]
-    C --> D{Determine Grade}
-    D -->|GPA >= 3.5| E[A]
-    D -->|GPA >= 3.0| F[B]
-    D -->|GPA >= 2.5| G[C]
-    D -->|GPA >= 2.0| H[D]
-    D -->|GPA < 2.0| I[F]
-    C --> J[Update UI]
-    J --> K[Display Grade in TextBox]
+timeline
+    title กระบวนการทำงานของโปรแกรม GPA Calculator
+    section ผู้ใช้กรอกข้อมูล
+      กรอกชื่อและคะแนน -> กดปุ่ม "Add"
+    section ฟังก์ชันที่ทำงาน
+      BtnAdd_Click() -> AddStudent() -> GPACalculator.AddScore()
+      GPACalculator.GetCount() -> คืนค่าจำนวนนักเรียน
+      GPACalculator.GetMaxScore() -> คืนค่าสูงสุด
+      GPACalculator.GetMinScore() -> คืนค่าต่ำสุด
+      GPACalculator.GetGPAx() -> คืนค่าเฉลี่ย GPA
+    section แสดงผลลัพธ์
+      อัปเดตค่าใน TextBox และ DataGridView
 ```
 
 ---
 
-## 🏗️ Installation & Setup
-1. **Clone the Repository**
-   ```sh
-   git clone https://github.com/your-repo/gpa-calculator.git
-   ```
-2. **Open the Project**
-   - Open `GPA_Calculator.sln` in **Visual Studio**
-3. **Run the Application**
-   - Press `F5` to build and run
+## โครงสร้างคลาส `GPACalculator`
+```mermaid
+classDiagram
+    class GPACalculator {
+        - List<double> scores
+        + AddScore(double score)
+        + int GetCount()
+        + double GetMaxScore()
+        + double GetMinScore()
+        + double GetGPAx()
+    }
+    class Form1 {
+        - GPACalculator calculator
+        + Form1()
+        + BtnAdd_Click(object sender, EventArgs e)
+        + AddStudent(TextBox nameBox, TextBox scoreBox)
+    }
+    Form1 --> GPACalculator : ใช้
+```
 
 ---
 
-## 🔢 How GPA is Calculated
-The GPA is calculated using the following formula:
+## วิธีการใช้งาน
+1. รันโปรแกรม `GPA Calculator` บน Windows Forms
+2. กรอกชื่อนักเรียนและคะแนนลงในช่องที่กำหนด
+3. กดปุ่ม **"Add"** เพื่อเพิ่มข้อมูล
+4. โปรแกรมจะแสดงจำนวนข้อมูล, คะแนนสูงสุด, คะแนนต่ำสุด และค่าเฉลี่ย GPA บน UI
+
+---
+
+## ฟังก์ชันหลัก
+| ฟังก์ชัน | คำอธิบาย |
+|----------|-----------|
+| `AddScore(double score)` | เพิ่มคะแนนเข้าไปใน `List<double> scores` |
+| `GetCount()` | คืนค่าจำนวนคะแนนที่ถูกเพิ่มเข้ามา |
+| `GetMaxScore()` | คืนค่าคะแนนที่สูงที่สุด |
+| `GetMinScore()` | คืนค่าคะแนนที่ต่ำที่สุด |
+| `GetGPAx()` | คืนค่าคะแนนเฉลี่ย GPA |
+
+---
+
+## ตัวอย่างโค้ดหลัก
 ```csharp
-public double GetGrade()
-{
-    return scores.Count > 0 ? scores.Average() : 0;
+// ฟังก์ชันเพิ่มคะแนน
+public void AddScore(double score) {
+    scores.Add(score);
+}
+
+// ฟังก์ชันคืนค่าจำนวนคะแนนทั้งหมด
+public int GetCount() {
+    return scores.Count;
+}
+
+// ฟังก์ชันคืนค่าคะแนนสูงสุด
+public double GetMaxScore() {
+    return scores.Count > 0 ? scores.Max() : 0;
 }
 ```
 
 ---
 
-## 🔤 Letter Grade Conversion
-```csharp
-public string GetLetterGrade()
-{
-    double grade = GetGrade();
-    if (grade >= 3.5) return "A";
-    if (grade >= 3.0) return "B";
-    if (grade >= 2.5) return "C";
-    if (grade >= 2.0) return "D";
-    return "F";
-}
-```
+## หมายเหตุ
+- โค้ดนี้รองรับ Windows Forms และต้องเพิ่ม `DataGridView` และ `TextBox` ให้ตรงกับที่ใช้ในโค้ด
+- ควรตรวจสอบการแปลงค่าข้อมูลจาก TextBox ก่อนนำไปใช้เพื่อป้องกันข้อผิดพลาด
 
 ---
 
-## 📷 UI Preview
-![GPA Calculator Screenshot](screenshot.png)
+## ผู้พัฒนา
+- **ชื่อ:** (ใส่ชื่อผู้พัฒนา)
+- **GitHub:** (ใส่ลิงก์ GitHub ถ้ามี)
+- **อีเมล:** (ใส่อีเมลติดต่อถ้ามี)
 
----
-
-## 💡 Future Improvements
-- Add a database to store student records
-- Export GPA results to a PDF report
-- Add graphical grade distribution visualization
-
----
-
-## 📝 License
-This project is licensed under the **MIT License**.
